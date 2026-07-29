@@ -1,0 +1,31 @@
+# Environment variables (CRITICAL: Do not push API keys)
+.env
+.env.*
+!.env.example
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Django local database & staticfiles
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
