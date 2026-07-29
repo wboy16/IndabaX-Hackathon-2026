@@ -1,0 +1,44 @@
+site_id,region,constituency,latitude,longitude,land_tenure,vegetation_cover_pct,ndvi,grass_biomass_kg_ha,bush_biomass_kg_ha,bush_encroachment_level,grazing_pressure,livestock_density_lsu_ha,carrying_capacity_ha_lsu,pasture_condition_score,last_survey_date,total_biomass_kg_ha,forage_ratio,recommended_density_lsu_ha,overstocking_ratio,bush_encroachment_numeric,pasture_condition_target
+Nam-Khm-001,Khomas,Windhoek Rural,-22.56,17.08,Commercial,38.5,0.34,850.0,1200.0,Moderate,Moderate,0.08,12.5,Fair,2026-04-12,2050.0,0.415,0.08,1.0,2,1
+Nam-Khm-002,Khomas,Seeis,-22.45,17.58,Commercial,42.0,0.38,1100.0,950.0,Low,Low,0.06,10.0,Good,2026-05-01,2050.0,0.537,0.1,0.6,1,2
+Nam-Khm-003,Khomas,Dordabis,-22.96,17.65,Communal,28.0,0.24,520.0,1800.0,High,Severe,0.14,18.0,Poor,2026-03-20,2320.0,0.224,0.05555555555555555,2.52,3,0
+Nam-Khm-004,Khomas,Hochfeld Road,-21.9,17.3,Commercial,45.0,0.41,1350.0,800.0,Low,Moderate,0.07,9.5,Good,2026-06-10,2150.0,0.628,0.10526315789473684,0.67,1,2
+Nam-Ero-001,Erongo,Karibib,-21.94,15.85,Commercial,24.0,0.21,410.0,1400.0,Moderate,High,0.05,22.0,Poor,2026-04-18,1810.0,0.227,0.045454545454545456,1.1,2,0
+Nam-Ero-002,Erongo,Omaruru,-21.42,15.95,Commercial,35.0,0.31,780.0,1100.0,Moderate,Moderate,0.06,14.0,Fair,2026-05-15,1880.0,0.415,0.07142857142857142,0.84,2,1
+Nam-Ero-003,Erongo,Usakos,-21.98,15.6,Communal,18.0,0.16,290.0,1650.0,High,Severe,0.09,28.0,Poor,2026-03-10,1940.0,0.149,0.03571428571428571,2.52,3,0
+Nam-Ero-004,Erongo,Okombahe,-21.35,15.38,Communal,22.0,0.19,340.0,1500.0,Moderate,High,0.07,24.0,Poor,2026-04-05,1840.0,0.185,0.041666666666666664,1.68,2,0
+Nam-Har-001,Hardap,Mariental Rural,-24.6,17.96,Commercial,29.0,0.25,580.0,900.0,Low,Moderate,0.04,20.0,Fair,2026-05-12,1480.0,0.392,0.05,0.8,1,1
+Nam-Har-002,Hardap,Gibeon,-25.13,17.76,Communal,21.0,0.18,360.0,1250.0,Moderate,High,0.06,26.0,Poor,2026-04-02,1610.0,0.224,0.038461538461538464,1.56,2,0
+Nam-Har-003,Hardap,Rehoboth Rural,-23.32,17.08,Commercial,34.0,0.3,750.0,1100.0,Moderate,Moderate,0.06,15.0,Fair,2026-05-22,1850.0,0.405,0.06666666666666667,0.9,2,1
+Nam-Har-004,Hardap,Maltahöhe,-24.84,16.98,Commercial,25.0,0.22,460.0,850.0,Low,Low,0.03,24.0,Fair,2026-06-01,1310.0,0.351,0.041666666666666664,0.72,1,1
+Nam-Kar-001,Karas,Keetmanshoop Rural,-26.58,18.13,Commercial,19.0,0.17,320.0,600.0,Low,Low,0.02,32.0,Fair,2026-04-30,920.0,0.348,0.03125,0.64,1,1
+Nam-Kar-002,Karas,Berseba,-26.0,17.77,Communal,16.0,0.14,240.0,800.0,Low,High,0.04,38.0,Poor,2026-03-14,1040.0,0.231,0.02631578947368421,1.52,1,0
+Nam-Kar-003,Karas,Aroab,-26.8,19.65,Commercial,22.0,0.19,390.0,550.0,Low,Low,0.03,30.0,Fair,2026-05-18,940.0,0.415,0.03333333333333333,0.9,1,1
+Nam-Kar-004,Karas,Karasburg West,-28.02,18.75,Commercial,15.0,0.13,210.0,450.0,Low,Moderate,0.02,42.0,Poor,2026-04-10,660.0,0.318,0.023809523809523808,0.84,1,0
+Nam-Kun-001,Kunene,Khorixas,-20.37,14.96,Communal,26.0,0.23,490.0,1700.0,High,High,0.05,22.0,Poor,2026-05-08,2190.0,0.224,0.045454545454545456,1.1,3,0
+Nam-Kun-002,Kunene,Opuwo Rural,-18.06,13.84,Communal,31.0,0.28,680.0,1300.0,Moderate,Moderate,0.06,18.0,Fair,2026-04-25,1980.0,0.343,0.05555555555555555,1.08,2,1
+Nam-Kun-003,Kunene,Outjo,-20.11,16.15,Commercial,44.0,0.39,1250.0,1900.0,Severe,High,0.08,11.0,Good,2026-06-04,3150.0,0.397,0.09090909090909091,0.88,4,2
+Nam-Kun-004,Kunene,Sesfontein,-19.12,13.62,Conservancy,23.0,0.2,380.0,1100.0,Moderate,Low,0.03,25.0,Fair,2026-03-29,1480.0,0.257,0.04,0.75,2,1
+Nam-Oha-001,Ohangwena,Eenhana,-17.47,16.33,Communal,52.0,0.48,1600.0,2100.0,High,Severe,0.15,8.0,Good,2026-05-30,3700.0,0.432,0.125,1.2,3,2
+Nam-Oha-002,Ohangwena,Helao Nafidi,-17.4,15.88,Communal,48.0,0.44,1420.0,2300.0,Severe,High,0.14,9.0,Fair,2026-04-14,3720.0,0.382,0.1111111111111111,1.26,4,1
+Nam-Oha-003,Ohangwena,Okongo,-17.52,17.24,Communal,55.0,0.51,1800.0,1800.0,Moderate,Moderate,0.11,7.5,Excellent,2026-06-12,3600.0,0.5,0.13333333333333333,0.82,2,3
+Nam-Oke-001,Okavango East,Rundu Rural,-17.92,19.77,Communal,58.0,0.54,1950.0,1600.0,Moderate,High,0.13,7.0,Excellent,2026-05-19,3550.0,0.549,0.14285714285714285,0.91,2,3
+Nam-Oke-002,Okavango East,Mashare,-17.9,20.15,Communal,62.0,0.57,2200.0,1400.0,Low,Moderate,0.12,6.5,Excellent,2026-06-08,3600.0,0.611,0.15384615384615385,0.78,1,3
+Nam-Okw-001,Okavango West,Nkurenkuru,-17.62,18.6,Communal,56.0,0.52,1850.0,1750.0,Moderate,Moderate,0.12,7.2,Good,2026-05-11,3600.0,0.514,0.1388888888888889,0.86,2,2
+Nam-Oma-001,Omaheke,Gobabis,-22.45,18.97,Commercial,46.0,0.42,1400.0,1600.0,High,Moderate,0.08,9.0,Good,2026-05-25,3000.0,0.467,0.1111111111111111,0.72,3,2
+Nam-Oma-002,Omaheke,Epukiro,-21.7,19.1,Communal,38.0,0.35,980.0,2200.0,Severe,Severe,0.11,13.0,Poor,2026-04-20,3180.0,0.308,0.07692307692307693,1.43,4,0
+Nam-Oma-003,Omaheke,Otjinene,-21.14,18.78,Communal,41.0,0.37,1120.0,1950.0,High,High,0.1,11.5,Fair,2026-06-02,3070.0,0.365,0.08695652173913043,1.15,3,1
+Nam-Oma-004,Omaheke,Steinhausen,-21.82,18.23,Commercial,49.0,0.45,1550.0,1200.0,Moderate,Low,0.07,8.5,Excellent,2026-05-04,2750.0,0.564,0.11764705882352941,0.6,2,3
+Nam-Omu-001,Omusati,Outapi,-17.5,14.98,Communal,43.0,0.39,1150.0,1500.0,Moderate,Severe,0.13,11.0,Fair,2026-04-16,2650.0,0.434,0.09090909090909091,1.43,2,1
+Nam-Omu-002,Omusati,Ruacana,-17.43,14.38,Communal,36.0,0.32,880.0,1350.0,Moderate,High,0.1,14.0,Fair,2026-05-27,2230.0,0.395,0.07142857142857142,1.4,2,1
+Nam-Osh-001,Oshana,Oshakati East,-17.78,15.7,Communal,40.0,0.36,1020.0,1400.0,Moderate,Severe,0.14,12.0,Fair,2026-04-22,2420.0,0.421,0.08333333333333333,1.68,2,1
+Nam-Osh-002,Oshana,Ondangwa Rural,-17.91,15.96,Communal,39.0,0.35,970.0,1300.0,Moderate,High,0.12,12.5,Fair,2026-05-14,2270.0,0.427,0.08,1.5,2,1
+Nam-Osk-001,Oshikoto,Tsumeb,-19.24,17.71,Commercial,51.0,0.47,1650.0,2100.0,Severe,Moderate,0.09,8.0,Good,2026-06-06,3750.0,0.44,0.125,0.72,4,2
+Nam-Osk-002,Oshikoto,Guinas,-19.2,17.2,Commercial,53.0,0.49,1720.0,1850.0,High,Low,0.07,7.8,Excellent,2026-05-29,3570.0,0.482,0.12820512820512822,0.55,3,3
+Nam-Osk-003,Oshikoto,Omuthiya,-18.36,16.58,Communal,37.0,0.33,910.0,1600.0,Moderate,High,0.11,13.5,Fair,2026-04-08,2510.0,0.363,0.07407407407407407,1.48,2,1
+Nam-Otj-001,Otjozondjupa,Otjiwarongo,-20.46,16.65,Commercial,47.0,0.43,1480.0,2400.0,Severe,Moderate,0.08,8.8,Good,2026-06-11,3880.0,0.381,0.11363636363636363,0.7,4,2
+Nam-Otj-002,Otjozondjupa,Grootfontein,-19.56,18.11,Commercial,54.0,0.5,1820.0,2200.0,High,Moderate,0.08,7.5,Excellent,2026-05-23,4020.0,0.453,0.13333333333333333,0.6,3,3
+Nam-Otj-003,Otjozondjupa,Okakarara,-20.58,17.46,Communal,36.0,0.33,890.0,2800.0,Severe,Severe,0.12,14.0,Poor,2026-04-19,3690.0,0.241,0.07142857142857142,1.68,4,0
+Nam-Otj-004,Otjozondjupa,Okahandja,-21.98,16.91,Commercial,42.0,0.38,1180.0,1500.0,Moderate,Moderate,0.07,10.5,Good,2026-05-17,2680.0,0.44,0.09523809523809523,0.74,2,2
+Nam-Zam-001,Zambezi,Katima Mulilo Rural,-17.5,24.27,Communal,65.0,0.61,2450.0,1200.0,Low,Moderate,0.11,5.5,Excellent,2026-06-14,3650.0,0.671,0.18181818181818182,0.6,1,3
+Nam-Zam-002,Zambezi,Kongola,-17.75,23.38,Conservancy,61.0,0.56,2150.0,1450.0,Low,Low,0.05,6.0,Excellent,2026-05-09,3600.0,0.597,0.16666666666666666,0.3,1,3
