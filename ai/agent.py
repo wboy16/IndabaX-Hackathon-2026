@@ -49,20 +49,23 @@ class RangelandAgent:
         # Step 2: Attempt OpenAI Agent call if API key is provided
         if self.api_key:
             try:
-                from langchain_openai import ChatOpenAI
-                from langchain_core.messages import SystemMessage, HumanMessage
+                # Prefer common langchain imports; adapt across versions if needed
+                try:
+                    from langchain.chat_models import ChatOpenAI
+                    from langchain.schema import SystemMessage, HumanMessage
+                except Exception:
+                    # Fall back to older/alternate import names if present
+                    from langchain_openai import ChatOpenAI  # type: ignore
+                    from langchain_core.messages import SystemMessage, HumanMessage  # type: ignore
 
-                llm = ChatOpenAI(
-                    model=self.model_name,
-                    openai_api_key=self.api_key,
-                    temperature=0.3
-                )
+                # Create LLM client
+                llm = ChatOpenAI(model_name=self.model_name, openai_api_key=self.api_key, temperature=0.3)
 
                 context_prompt = (
                     f"{SYSTEM_PROMPT}\n\n"
                     f"FARMER INQUIRY: {user_query}\n"
                     f"FARMER CONTEXT: Region={region}, Land Tenure={land_tenure}, Herd Size={herd_size} cattle, Farm Size={farm_size_ha} ha.\n\n"
-                    f"GROUND TRUTH RANGELAND DATA:\n{json.dumps(rangeland_data['summary'], indent=2)}\n\n"
+                    f"GROUND TRUTH RANGELAND DATA:\n{json.dumps(rangeland_data.get('summary', {}), indent=2)}\n\n"
                     f"LIVE WEATHER & RECENT RAINFALL:\n{json.dumps(weather_data, indent=2)}\n\n"
                     f"Generate a clear, transparent recommendation explaining all reasoning and data limitations."
                 )
@@ -72,8 +75,27 @@ class RangelandAgent:
                     HumanMessage(content=context_prompt)
                 ]
 
-                response = llm.invoke(messages)
-                advice_text = response.content
+                # Call the LLM and attempt to extract text robustly across langchain versions
+                response = llm(messages)
+
+                # Try several ways of extracting content depending on returned object
+                advice_text = None
+                try:
+                    # Some wrappers may place text on .content
+                    advice_text = response.content  # type: ignore
+                except Exception:
+                    try:
+                        # ChatResult / generations structure
+                        advice_text = response.generations[0][0].text  # type: ignore
+                    except Exception:
+                        try:
+                            # As a last resort, stringify
+                            advice_text = str(response)
+                        except Exception:
+                            advice_text = ""
+
+                if not advice_text:
+                    advice_text = "(LLM produced no textual response)"
 
                 return {
                     "query": user_query,
@@ -82,7 +104,7 @@ class RangelandAgent:
                     "advice": advice_text,
                     "reasoning_explained": True,
                     "data_sources_used": {
-                        "rangeland_dataset": rangeland_data["summary"],
+                        "rangeland_dataset": rangeland_data.get("summary"),
                         "weather_api": weather_data
                     },
                     "tools_executed": tools_called,
@@ -142,9 +164,13 @@ class RangelandAgent:
 
         # Calculations if herd_size and farm_size_ha provided
         stocking_capacity_text = ""
-        if herd_size and farm_size_ha and carrying_cap > 0:
-            max_recommended_lsu = round(farm_size_ha / carrying_cap, 1)
-            current_ratio = round(herd_size / max_recommended_lsu, 2) if max_recommended_lsu > 0 else 1.0
+        if herd_size and farm_size_ha and carrying_cap and carrying_cap > 0:
+            try:
+                max_recommended_lsu = round(float(farm_size_ha) / float(carrying_cap), 1)
+            except Exception:
+                max_recommended_lsu = 0.0
+
+            current_ratio = round(float(herd_size) / max_recommended_lsu, 2) if max_recommended_lsu > 0 else 1.0
 
             if current_ratio > 1.2:
                 stocking_status = f"⚠️ OVERSTOCKED: Your herd of {herd_size} LSU exceeds the safe carrying capacity of {max_recommended_lsu} LSU for {farm_size_ha} hectares."
@@ -153,37 +179,43 @@ class RangelandAgent:
             else:
                 stocking_status = f"🌿 UNDERSTOCKED: Your farm has reserve grazing capacity for up to {max_recommended_lsu} LSU."
             
-            stocking_capacity_text = f"\n\n**Herd & Carrying Capacity Evaluation:**\n- Farm Size: {farm_size_ha} ha | Recommended Rate: {carrying_cap} ha/LSU\n- Safe Maximum Herd: {max_recommended_lsu} Large Stock Units (LSU)\n- Assessment: {stocking_status}"
+            stocking_capacity_text = (
+                f"\n\n**Herd & Carrying Capacity Evaluation:**\n"
+                f"- Farm Size: {farm_size_ha} ha | Recommended Rate: {carrying_cap} ha/LSU\n"
+                f"- Safe Maximum Herd: {max_recommended_lsu} LSU\n"
+                f"- Current Herd: {herd_size} LSU | Status: {stocking_status}"
+            )
 
         # Bush encroachment note
         bush_note = "Bush encroachment is currently manageable."
-        if "Severe" in encroachment_breakdown or "High" in encroachment_breakdown:
+        # Encroachment breakdown might be a dict of level -> count; check keys/values
+        high_enc = False
+        for k, v in encroachment_breakdown.items():
+            if isinstance(k, str) and ("severe" in k.lower() or "high" in k.lower()):
+                high_enc = True
+        if high_enc:
             bush_note = f"Bush encroachment in {region} is elevated (Bush Biomass ~{avg_bush} kg/ha). Consider targeted bush thinning to allow grass biomass (~{avg_grass} kg/ha) to recover."
 
-        return f"""### 🌾 Omiti Rangeland & Livestock Advisory Report ({region} Region)
+        advisory = (
+            f"### 🌾 Omiti Rangeland & Livestock Advisory Report ({region} Region)\n\n"
+            f"**Re:** \"{user_query}\"\n\n"
+            f"---\n\n"
+            f"#### 📊 1. Current Pasture & Weather Evidence Synthesis\n"
+            f"- **Location / Region:** {region} ({land_tenure} Land Tenure)\n"
+            f"- **Recent Rainfall (Past 14 Days):** {recent_rain} mm ({rain_status}) | Temp: {temp}°C\n"
+            f"- **Vegetation Health (NDVI):** {avg_ndvi} (Vegetation Cover: {avg_veg}%)\n"
+            f"- **Available Forage:** Grass Biomass ~{avg_grass} kg/ha | Bush Biomass ~{avg_bush} kg/ha\n"
+            f"- **Recommended Regional Carrying Capacity:** {carrying_cap} ha / LSU\n\n"
+            f"---\n\n"
+            f"#### 🐄 2. Recommended Management Strategy\n"
+            f"- **Grazing Pressure & Rotational Advice:** Based on recent rainfall of **{recent_rain} mm** and an NDVI score of **{avg_ndvi}**, pasture growth is in a **{rain_status}** state.{stocking_capacity_text}\n"
+            f"- **Camp Resting:** Rotate herds every 4 to 6 weeks to allow degraded camps at least 60 days of uninterrupted rest for seed set and root recovery.\n"
+            f"- **Bush Control:** {bush_note}\n\n"
+            f"---\n\n"
+            f"#### ⚠️ 3. Transparent Data Limitations & Reasoning\n"
+            f"*This advisory is generated by combining ground survey metrics from the Namibia Rangeland Dataset for {region} with live satellite-derived weather data from Open-Meteo.*\n"
+            f"- **Data Limitation:** Field survey sampling reflects regional averages. Local soil moisture, camp fencing, and micro-climates on your specific farm should be inspected prior to major herd movement.\n"
+            f"- **Drought Caution:** If total 30-day rainfall remains under 20mm, proactive destocking or supplemental feeding is advised before dry season peaks.\n"
+        )
 
-**Re:** "{user_query}"
-
----
-
-#### 📊 1. Current Pasture & Weather Evidence Synthesis
-- **Location / Region:** {region} ({land_tenure} Land Tenure)
-- **Recent Rainfall (Past 14 Days):** {recent_rain} mm ({rain_status}) | Temp: {temp}°C
-- **Vegetation Health (NDVI):** {avg_ndvi} (Vegetation Cover: {avg_veg}%)
-- **Available Forage:** Grass Biomass ~{avg_grass} kg/ha | Bush Biomass ~{avg_bush} kg/ha
-- **Recommended Regional Carrying Capacity:** {carrying_cap} ha / LSU
-
----
-
-#### 🐄 2. Recommended Management Strategy
-- **Grazing Pressure & Rotational Advice:** Based on recent rainfall of **{recent_rain} mm** and an NDVI score of **{avg_ndvi}**, pasture growth is in a **{rain_status}** state.{stocking_capacity_text}
-- **Camp Resting:** Rotate herds every 4 to 6 weeks to allow degraded camps at least 60 days of uninterrupted rest for seed set and root recovery.
-- **Bush Control:** {bush_note}
-
----
-
-#### ⚠️ 3. Transparent Data Limitations & Reasoning
-*This advisory is generated by combining ground survey metrics from the Namibia Rangeland Dataset for {region} with live satellite-derived weather data from Open-Meteo.*
-- **Data Limitation:** Field survey sampling reflects regional averages. Local soil moisture, camp fencing, and micro-climates on your specific farm should be inspected prior to major herd movements.
-- **Drought Caution:** If total 30-day rainfall remains under 20mm, proactive destocking or supplemental feeding is advised before dry season peaks.
-"""
+        return advisory

@@ -8,6 +8,24 @@ DATASET_PATH = os.path.join(
     "namibia_rangeland_synthetic.csv"
 )
 
+
+def safe_float(value: Any, default: float = 0.0) -> float:
+    """Convert value to float safely, returning default for empty/invalid values."""
+    try:
+        if value is None:
+            return default
+        # If already a float/int
+        if isinstance(value, (float, int)):
+            return float(value)
+        # Strip whitespace
+        s = str(value).strip()
+        if s == "":
+            return default
+        return float(s)
+    except (TypeError, ValueError):
+        return default
+
+
 class RangelandDatasetService:
     """Service to load, query, and aggregate Namibian rangeland and pasture data."""
 
@@ -19,27 +37,41 @@ class RangelandDatasetService:
         if not os.path.exists(self.csv_path):
             return []
         
-        records = []
+        records: List[Dict[str, Any]] = []
         with open(self.csv_path, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # Safely parse numeric fields
+                try:
+                    latitude = safe_float(row.get("latitude"), 0.0)
+                    longitude = safe_float(row.get("longitude"), 0.0)
+                    vegetation_cover_pct = safe_float(row.get("vegetation_cover_pct"), 0.0)
+                    ndvi = safe_float(row.get("ndvi"), 0.0)
+                    grass_biomass = safe_float(row.get("grass_biomass_kg_ha"), 0.0)
+                    bush_biomass = safe_float(row.get("bush_biomass_kg_ha"), 0.0)
+                    livestock_density = safe_float(row.get("livestock_density_lsu_ha"), 0.0)
+                    carrying_capacity = safe_float(row.get("carrying_capacity_ha_lsu"), 0.0)
+                except Exception:
+                    latitude = longitude = vegetation_cover_pct = ndvi = 0.0
+                    grass_biomass = bush_biomass = livestock_density = carrying_capacity = 0.0
+
                 records.append({
                     "site_id": row.get("site_id"),
-                    "region": row.get("region"),
-                    "constituency": row.get("constituency"),
-                    "latitude": float(row.get("latitude", 0.0)),
-                    "longitude": float(row.get("longitude", 0.0)),
-                    "land_tenure": row.get("land_tenure"),
-                    "vegetation_cover_pct": float(row.get("vegetation_cover_pct", 0.0)),
-                    "ndvi": float(row.get("ndvi", 0.0)),
-                    "grass_biomass_kg_ha": float(row.get("grass_biomass_kg_ha", 0.0)),
-                    "bush_biomass_kg_ha": float(row.get("bush_biomass_kg_ha", 0.0)),
-                    "bush_encroachment_level": row.get("bush_encroachment_level"),
-                    "grazing_pressure": row.get("grazing_pressure"),
-                    "livestock_density_lsu_ha": float(row.get("livestock_density_lsu_ha", 0.0)),
-                    "carrying_capacity_ha_lsu": float(row.get("carrying_capacity_ha_lsu", 0.0)),
-                    "pasture_condition_score": row.get("pasture_condition_score"),
-                    "last_survey_date": row.get("last_survey_date")
+                    "region": row.get("region") or "",
+                    "constituency": row.get("constituency") or "",
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "land_tenure": row.get("land_tenure") or "",
+                    "vegetation_cover_pct": vegetation_cover_pct,
+                    "ndvi": ndvi,
+                    "grass_biomass_kg_ha": grass_biomass,
+                    "bush_biomass_kg_ha": bush_biomass,
+                    "bush_encroachment_level": row.get("bush_encroachment_level") or "",
+                    "grazing_pressure": row.get("grazing_pressure") or "",
+                    "livestock_density_lsu_ha": livestock_density,
+                    "carrying_capacity_ha_lsu": carrying_capacity,
+                    "pasture_condition_score": row.get("pasture_condition_score") or "",
+                    "last_survey_date": row.get("last_survey_date") or ""
                 })
         return records
 
@@ -53,13 +85,13 @@ class RangelandDatasetService:
         records = self.load_all_records()
 
         if region:
-            records = [r for r in records if r["region"].lower() == region.lower()]
+            records = [r for r in records if (r.get("region") or "").lower() == region.lower()]
 
         if constituency:
-            records = [r for r in records if constituency.lower() in r["constituency"].lower()]
+            records = [r for r in records if constituency.lower() in (r.get("constituency") or "").lower()]
 
         if land_tenure:
-            records = [r for r in records if r["land_tenure"].lower() == land_tenure.lower()]
+            records = [r for r in records if (r.get("land_tenure") or "").lower() == land_tenure.lower()]
 
         if not records:
             return {
@@ -72,12 +104,12 @@ class RangelandDatasetService:
 
         # Calculate averages and distributions
         total = len(records)
-        avg_veg_cover = sum(r["vegetation_cover_pct"] for r in records) / total
-        avg_ndvi = sum(r["ndvi"] for r in records) / total
-        avg_grass = sum(r["grass_biomass_kg_ha"] for r in records) / total
-        avg_bush = sum(r["bush_biomass_kg_ha"] for r in records) / total
-        avg_carrying_cap = sum(r["carrying_capacity_ha_lsu"] for r in records) / total
-        avg_density = sum(r["livestock_density_lsu_ha"] for r in records) / total
+        avg_veg_cover = sum(safe_float(r.get("vegetation_cover_pct"), 0.0) for r in records) / total
+        avg_ndvi = sum(safe_float(r.get("ndvi"), 0.0) for r in records) / total
+        avg_grass = sum(safe_float(r.get("grass_biomass_kg_ha"), 0.0) for r in records) / total
+        avg_bush = sum(safe_float(r.get("bush_biomass_kg_ha"), 0.0) for r in records) / total
+        avg_carrying_cap = sum(safe_float(r.get("carrying_capacity_ha_lsu"), 0.0) for r in records) / total
+        avg_density = sum(safe_float(r.get("livestock_density_lsu_ha"), 0.0) for r in records) / total
 
         # Count frequencies
         encroachment_counts: Dict[str, int] = {}
@@ -85,9 +117,9 @@ class RangelandDatasetService:
         condition_counts: Dict[str, int] = {}
 
         for r in records:
-            enc = r["bush_encroachment_level"]
-            gp = r["grazing_pressure"]
-            cond = r["pasture_condition_score"]
+            enc = r.get("bush_encroachment_level") or "Unknown"
+            gp = r.get("grazing_pressure") or "Unknown"
+            cond = r.get("pasture_condition_score") or "Unknown"
             encroachment_counts[enc] = encroachment_counts.get(enc, 0) + 1
             grazing_pressure_counts[gp] = grazing_pressure_counts.get(gp, 0) + 1
             condition_counts[cond] = condition_counts.get(cond, 0) + 1
