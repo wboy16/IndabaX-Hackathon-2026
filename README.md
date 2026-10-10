@@ -3,6 +3,8 @@
 
 Omiti Advisory is a robust, modular Django RESTful API backend serving as the bridge between interactive user interfaces (web/mobile frontend) and a dataset/LLM pipeline. The backend turns complex rangeland, satellite, and weather data into practical, transparent grazing and livestock management guidance for Namibian farmers.
 
+
+
 ---
 
 
